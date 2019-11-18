@@ -21,7 +21,8 @@ UserFiles_XFCE()
 {
     local mousepaddconf=https://github.com/endeavouros-team/liveuser-desktop-settings/raw/master/dconf/mousepad.dconf
     wget -q --timeout=10 $mousepaddconf || DIE "sorry, unable to fetch mousepad.dconf."
-    rm -rf ~/.config/Thunar ~/.config/qt5ct ~/.config/xfce4
+    rm -f ~/.config/dconf/user
+    rm -rf ~/.config/Thunar ~/.config/qt5ct ~/.config/xfce4 ~/.cache
     cp -R $dotfiles_dirname/XFCE/. ~/
     dconf load / < mousepad.dconf
     # dbus-launch dconf load / < mousepad.dconf   # why this ???
@@ -29,7 +30,7 @@ UserFiles_XFCE()
 
 UserFiles_CINNAMON()
 {
-    rm -f ~/.config/dbus/user
+    rm -f ~/.config/dconf/user
     rm -rf ~/.cinnamon ~/.fontconfig ~/.icons ~/.local/share/cinnamon
     cp -R $dotfiles_dirname/CINNAMON/. ~/
     dconf load / < $dotfiles_dirname/cinnamon.dconf
