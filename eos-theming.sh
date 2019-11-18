@@ -56,9 +56,11 @@ Main() {
         lightdm-gtk-greeter
         lightdm-gtk-greeter-settings
     )
-    local sudo_cmds
+    local sudo_cmds=":"            # initial command does nothing!
     local workdir=$(mktemp -d)
     local xx
+
+    ## Common sudo commands:
 
     # Check which of the required packages is not installed.
     for xx in "${required_pkgs[@]}" ; do
@@ -75,27 +77,38 @@ Main() {
     # Now we have all the required files.
 
     if [ -n "$packages" ] ; then
-        sudo_cmds="pacman -S ${packages[*]} --noconfirm >& /dev/null"       # install required packages
+        sudo_cmds+="; pacman -S ${packages[*]} --noconfirm >& /dev/null"       # install required packages
     fi
     diff $greeterfile /etc/lightdm/$greeterfile >& /dev/null || {
-        test -n "$sudo_cmds" && sudo_cmds+=" ; "
-        sudo_cmds+="cp $PWD/$greeterfile /etc/lightdm/"                     # put greeter in place
+        sudo_cmds+="; cp $PWD/$greeterfile /etc/lightdm/"                     # put greeter in place
     }
     if [ ! -d /usr/share/endeavouros ] ; then
-        test -n "$sudo_cmds" && sudo_cmds+=" ; "
-        sudo_cmds+="mkdir -p /usr/share/endeavouros"                        # make sure folder exists
+        sudo_cmds+="; mkdir -p /usr/share/endeavouros"                        # make sure folder exists
     fi
     for xx in $PWD/$dotfiles_dirname/endeavouros/* ; do
         diff $xx /usr/share/endeavouros >& /dev/null || {
-            test -n "$sudo_cmds" && sudo_cmds+=" ; "
-            sudo_cmds+="cp $xx /usr/share/endeavouros"                      # put pictures in place
+            sudo_cmds+="; cp $xx /usr/share/endeavouros"                      # put pictures in place
         }
     done
+
+    ## DE specific sudo commands:
+
+    case "$DE" in
+        XFCE)
+            sudo_cmds+="; chmod 0644 /usr/share/endeavouros/*.png"
+            sudo_cmds+="; rm -f /usr/share/backgrounds/xfce/xfce-stripes.png"
+            sudo_cmds+="; ln -s /usr/share/endeavouros/endeavouros-wallpaper.png /usr/share/backgrounds/xfce/xfce-stripes.png"
+            ;;
+    esac
+
+    ## Now run all sudo commands:
 
     if [ -n "$sudo_cmds" ] ; then
         echo "Installing system files."
         su -c "$sudo_cmds"
     fi
+
+    ## DE specific user commands:
 
     echo "Installing $DE user files."
     case "$DE" in
@@ -105,9 +118,10 @@ Main() {
 
     popd >/dev/null
 
+    # cleanup
     rm -rf $workdir
 
-    echo "All done -- please reboot and enjoy the default EndeavourOS $DE Theming!"
+    echo "All done -- you must reboot now to have the default EndeavourOS $DE Theming!"
 }
 
 Main "$@"
