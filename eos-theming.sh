@@ -4,6 +4,17 @@
 #
 # Usage: $0 <DE-name>
 
+Debug() {
+    case "$DEBUGGING" in
+        [yY]* | 1 | true | enable* | on) echo "$@" >&2 ;;
+    esac
+}
+
+Dexe() {          # debug and execute
+    Debug "$1"
+    $1
+}
+
 MSG() {
     local title="$1"
     local text="$2"
@@ -20,10 +31,11 @@ DIE() {
 UserFiles_XFCE()
 {
     local mousepaddconf=https://github.com/endeavouros-team/liveuser-desktop-settings/raw/master/dconf/mousepad.dconf
-    wget -q --timeout=10 $mousepaddconf || DIE "sorry, unable to fetch mousepad.dconf."
-    rm -f ~/.config/dconf/user
-    rm -rf ~/.config/Thunar ~/.config/qt5ct ~/.config/xfce4 ~/.cache
-    cp -R $dotfiles_dirname/XFCE/. ~/
+    Dexe "wget -q --timeout=10 $mousepaddconf" || DIE "sorry, unable to fetch mousepad.dconf."
+    Dexe "rm -f ~/.config/dconf/user"
+    Dexe "rm -rf ~/.config/Thunar ~/.config/qt5ct ~/.config/xfce4 ~/.cache"
+    Dexe "cp -R $dotfiles_dirname/XFCE/. ~/"
+    Debug "dconf load / < mousepad.dconf"
     dconf load / < mousepad.dconf
     # dbus-launch dconf load / < mousepad.dconf   # why this ???
 }
@@ -38,6 +50,8 @@ UserFiles_CINNAMON()
 
 Main() {
     local DE="$1"
+    local DEBUGGING=no
+    test "$DE" = "XFCE" && DEBUGGING=yes                 # TODO: remove this line !!!
     local progname="eos-theming.sh"
     case "$DE" in
         XFCE | CINNAMON) ;;
@@ -70,14 +84,15 @@ Main() {
     pushd $workdir >/dev/null           # do everything here at temporary folder
 
     echo "Fetching $DE theming files."
-    wget -q --timeout=10 $greeter       || DIE "sorry, unable to fetch $greeterfile."
+    Dexe "wget -q --timeout=10 $greeter"       || DIE "sorry, unable to fetch $greeterfile."
 
-    git clone $dotfiles >& /dev/null    || DIE "sorry, unable to fetch theming dotfiles."
+    Debug "git clone $dotfiles"
+    git clone $dotfiles >& /dev/null           || DIE "sorry, unable to fetch theming dotfiles."
 
     # Now we have all the required files.
 
     if [ -n "$packages" ] ; then
-        sudo_cmds+="; pacman -S ${packages[*]} --noconfirm >& /dev/null"       # install required packages
+        sudo_cmds+="; pacman -S ${packages[*]} --noconfirm >& /dev/null"      # install required packages
     fi
     diff $greeterfile /etc/lightdm/$greeterfile >& /dev/null || {
         sudo_cmds+="; cp $PWD/$greeterfile /etc/lightdm/"                     # put greeter in place
@@ -105,6 +120,7 @@ Main() {
 
     if [ -n "$sudo_cmds" ] ; then
         echo "Installing system files."
+        Debug "su -c \"$sudo_cmds\""
         su -c "$sudo_cmds"
     fi
 
