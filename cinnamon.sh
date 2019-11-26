@@ -1,6 +1,6 @@
 #bin/bash
 echo "******* Getting theme packages installed now: *******" && sleep 1
-sudo pacman -S arc-gtk-theme arc-x-icons-theme kalu --noconfirm --needed
+sudo pacman -S arc-gtk-theme arc-x-icons-theme --noconfirm --needed
 echo "******* setting up theme for Light-DM: *******" && sleep 1
 wget https://raw.githubusercontent.com/endeavouros-team/EndeavourOS-archiso/master/airootfs/etc/lightdm/lightdm-gtk-greeter.conf
 sudo cp lightdm-gtk-greeter.conf /etc/lightdm/lightdm-gtk-greeter.conf
