@@ -1,6 +1,7 @@
 EndeavourOS theming files and scripts for all the different DE's
 # Only for testing purpose not for real use!
 
+![xfce4-endeavouros.png](https://raw.githubusercontent.com/endeavouros-team/DE-theming/master/xfce4-endeavouros.png)
 If you want to install original EndeavourOS xfce4 with theming you can do it like this:
 
 
