@@ -9,6 +9,7 @@ echo "******* setting up theme for Light-DM: *******" && sleep 1
     wget -q --timeout=10 https://github.com/endeavouros-team/EndeavourOS-archiso/raw/master/airootfs/etc/lightdm/lightdm-gtk-greeter.conf
         sudo cp  lightdm-gtk-greeter.conf /etc/lightdm/
         rm lightdm-gtk-greeter.conf
+        sudo systemctl -f enable lightdm
 
 echo "******* cloning dotfiles for EndeavourOS - XFCE4 Theming *******" && sleep 1
     wget https://raw.githubusercontent.com/endeavouros-team/liveuser-desktop-settings/master/dconf/mousepad.dconf
