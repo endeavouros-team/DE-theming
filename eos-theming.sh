@@ -35,7 +35,8 @@ UserFiles_XFCE()
     Dexe "rm -f ~/.config/dconf/user"
     Dexe "rm -rf ~/.config/Thunar ~/.config/qt5ct ~/.config/xfce4 ~/.cache"
     Dexe "cp -R $dotfiles_dirname/XFCE/. ~/"
-    Dexe "cp $dotfiles_dirname/XFCE/.config/user-dirs.conf ~/.config/"
+    Dexe "wget -q --timeout=10 https://raw.githubusercontent.com/endeavouros-team/DE-theming/master/XFCE/.config/user-dirs.conf"
+    Dexe "cp user-dirs.conf ~/.config/"
     Debug "dconf load / < mousepad.dconf"
     dconf load / < mousepad.dconf
     # dbus-launch dconf load / < mousepad.dconf   # why this ???
