@@ -20,7 +20,7 @@ echo "******* cloning dotfiles for EndeavourOS - XFCE4 Theming *******" && sleep
     cp -R XFCE/. ~/
     cp XFCE/.config/user-dirs.conf ~/.config/
     cd ..
-    rm -r DE-theming
+    rm -rf DE-theming
 
 echo "******* All Done --- restarting System NOW! *******"
 echo "******* Please login again and enjoy EndeavourOS Theming! *******"
