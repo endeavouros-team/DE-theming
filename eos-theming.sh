@@ -35,6 +35,7 @@ UserFiles_XFCE()
     Dexe "rm -f ~/.config/dconf/user"
     Dexe "rm -rf ~/.config/Thunar ~/.config/qt5ct ~/.config/xfce4 ~/.cache"
     Dexe "cp -R $dotfiles_dirname/XFCE/. ~/"
+    Dexe "cp $dotfiles_dirname/XFCE/.config/user-dirs.conf ~/.config/"
     Debug "dconf load / < mousepad.dconf"
     dconf load / < mousepad.dconf
     # dbus-launch dconf load / < mousepad.dconf   # why this ???
@@ -137,7 +138,7 @@ Main() {
     # cleanup
     rm -rf $workdir
 
-    echo "All done -- you must reboot now to have the default EndeavourOS $DE Theming!"
+    echo "All done -- you must do run "sudo systemctl reboot" now to have the default EndeavourOS $DE Theming!"
 }
 
 Main "$@"
