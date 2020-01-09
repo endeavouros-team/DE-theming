@@ -11,3 +11,10 @@ If you want to install original EndeavouOS xfce4 with theming you can do it like
 `wget https://raw.githubusercontent.com/endeavouros-team/DE-theming/master/xfce.sh`
 
 `sh xfce.sh`
+
+After rebooted and you see a working theming you must remove this file:
+
+
+**~/.config/user-dirs.conf** --> as it will give issues on changing theme or if you want to set back to some default setting.
+
+`rm ~/.config/user-dirs.conf`
